@@ -32,7 +32,7 @@ license_filename = ARGV[1]
 STDERR.puts "project:#{project_dir} license:#{license_filename}"
 license_text = File.read license_filename
 
-new_header = "\n"
+new_header = "/*\n\n#{license_text}\n*/\n"
 fetcher = FileFetcher.new project_dir
 
 files = fetcher.fetch ['.'], ['c', 'm', 'h', 'cpp', 'hpp', 'cs', 'go', 'js', 'rs']
@@ -41,7 +41,6 @@ files.each do |file_name|
 	STDERR.puts "Replacing: #{file_name}"
 	extension = File.extname(file_name)[1..-1]
 	contents = File.open(file_name,'r:bom|utf-8', &:read)
-	# contents = File.read file_name
 	contents = contents.lstrip
 	contents = contents.sub("\xEF\xBB\xBF".force_encoding('UTF-8'), "")
 	new_contents = contents.sub /\/\*(\*(?!\/)|[^*])*\*\//, ''
